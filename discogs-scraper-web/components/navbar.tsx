@@ -44,9 +44,9 @@ export const Navbar = () => {
   );
 
   return (
-    <HeroUINavbar className="h-24" maxWidth="xl" position="sticky">
+    <HeroUINavbar className="h-24 " maxWidth="xl" position="sticky">
       <NavbarContent
-        className="basis-1/5 sm:basis-full font-oswald"
+        className="basis-1/5 sm:basis-full font-oswald "
         justify="start"
       >
         <NavbarBrand as="li" className="gap-3 max-w-fit">
