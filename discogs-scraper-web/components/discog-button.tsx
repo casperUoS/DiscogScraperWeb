@@ -1,13 +1,18 @@
-import { Button } from "@heroui/button";
+import { Button, PressEvent } from "@heroui/button";
 import clsx from "clsx";
 import { ReactNode } from "react";
 
 type DiscogButtonProps = {
   children: ReactNode;
   className?: string;
+  onPress?: (e: PressEvent) => void;
 };
 
-export const DiscogButton = ({ children, className }: DiscogButtonProps) => {
+export const DiscogButton = ({
+  children,
+  className,
+  onPress,
+}: DiscogButtonProps) => {
   return (
     <Button
       className={clsx(
@@ -15,6 +20,7 @@ export const DiscogButton = ({ children, className }: DiscogButtonProps) => {
         className,
       )}
       size="md"
+      onPress={onPress}
     >
       {children}
     </Button>

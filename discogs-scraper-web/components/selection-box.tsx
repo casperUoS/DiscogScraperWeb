@@ -27,9 +27,18 @@ type SelectionBoxItem = {
 type SelectionBoxProps = {
   items: SelectionBoxItem[];
   className?: string;
+  selectedKeys?: any;
+  onSelectionChange?: (keys: any) => void;
+  selectionMode?: "none" | "single" | "multiple";
 };
 
-export const SelectionBox = ({ items, className }: SelectionBoxProps) => (
+export const SelectionBox = ({
+  items,
+  className,
+  selectedKeys,
+  onSelectionChange,
+  selectionMode = "multiple",
+}: SelectionBoxProps) => (
   <ListboxWrapper className={className}>
     <Listbox
       isVirtualized
@@ -39,11 +48,13 @@ export const SelectionBox = ({ items, className }: SelectionBoxProps) => (
       }}
       items={items}
       label={"Select from 1000 items"}
+      selectedKeys={selectedKeys}
+      selectionMode={selectionMode}
       virtualization={{
         maxListboxHeight: 400,
         itemHeight: 40,
       }}
-      onAction={(key) => alert(key)}
+      onSelectionChange={onSelectionChange}
     >
       {(item) => <ListboxItem key={item.key}>{item.label}</ListboxItem>}
     </Listbox>

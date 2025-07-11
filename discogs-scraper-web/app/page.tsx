@@ -1,12 +1,13 @@
 "use client";
 
 import { Input } from "@heroui/input";
+import { useState } from "react";
 
 import SelectionBox from "@/components/selection-box";
 import { DiscogButton } from "@/components/discog-button";
 
 export default function Home() {
-  const items2 = [
+  const defaultColumns = [
     {
       key: "Curator 949x",
       label: "Curator",
@@ -120,53 +121,142 @@ export default function Home() {
       label: "Cat",
     },
   ];
+  // const items: { key: string; label: string }[] = [];
+  const [urlItems, setUrlItems] = useState<{ key: string; label: string }[]>(
+    [],
+  );
+  const [urlInput, setUrlInput] = useState("");
+  const [userToken, setUserToken] = useState("");
 
-  const generateItems = (n: number) => {
-    const items = [
-      "Cat",
-      "Dog",
-      "Elephant",
-      "Lion",
-      "Tiger",
-      "Giraffe",
-      "Dolphin",
-      "Penguin",
-      "Zebra",
-      "Shark",
-      "Whale",
-      "Otter",
-      "Crocodile",
-    ];
+  // Proper undo buffer using React state
+  const [backupURLs, setBackupURLs] = useState<
+    { key: string; label: string }[]
+  >([]);
 
-    const dataset = [];
+  const [selectedColumns, setSelectedColumns] = useState(new Set<string>());
+  const [selectedUrls, setSelectedUrls] = useState(new Set<string>());
 
-    for (let i = 0; i < n; i++) {
-      const item = items[i % items.length];
+  const onAdd = () => {
+    setBackupURLs(urlItems); // Save current state before making changes
+    if (urlInput.trim() === "") return; // Don't add empty URLs
 
-      dataset.push({
-        key: `${item}${i}`,
-        label: `${item.toLowerCase()}${i}`,
-        // description: "Sample description",
-      });
+    // Check if URL already exists
+    const urlExists = urlItems.some((item) => item.key === urlInput);
+
+    if (!urlExists) {
+      // Create a new array with the new item
+      const newItems = [...urlItems, { key: urlInput, label: urlInput }];
+
+      setUrlItems(newItems);
+    } else {
+      alert("You entered in the same url twice, nice one");
     }
-
-    return dataset;
+    setUrlInput("");
   };
 
-  const items = generateItems(1000);
+  const onDelete = () => {
+    setBackupURLs(urlItems); // Save current state before making changes
+    const newItems = urlItems.filter((item) => !selectedUrls.has(item.key));
+
+    setUrlItems(newItems);
+    setSelectedUrls(new Set());
+  };
+
+  const onDeleteLast = () => {
+    setBackupURLs(urlItems); // Save current state before making changes
+    if (urlItems.length > 0) {
+      const newItems = urlItems.slice(0, -1); // Remove last item properly
+
+      setUrlItems(newItems);
+    }
+  };
+
+  const onClear = () => {
+    setBackupURLs(urlItems); // Save current state before making changes
+    setUrlItems([]);
+  };
+
+  const onUndo = () => {
+    setUrlItems(backupURLs); // Restore previous state
+  };
+
+  const onRun = async () => {
+    // if (userToken === "") {
+    //   alert("Please enter a user token");
+
+    //   return;
+    // }
+
+    if (urlItems.length === 0) {
+      alert("Please add at least one URL");
+
+      return;
+    }
+
+    // if (selectedColumns.size === 0) {
+    //   alert("Please select at least one column");
+
+    //   return;
+    // }
+
+    try {
+      const response = await fetch("/api/fetchURLs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userToken,
+          urls: urlItems,
+          columns: defaultColumns,
+        }),
+      });
+
+      const { csvData } = await response.json();
+
+      downloadCSV(csvData, "output.csv");
+    } catch (error) {
+      if (error instanceof Error) {
+        alert("Error: " + error.message);
+      } else {
+        alert("An unknown error occurred");
+      }
+    }
+  };
+
+  const downloadCSV = (content: string, filename: string) => {
+    const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <>
       <div className="flex flex-row items-start gap-4">
         <div className="flex flex-col w-[260px]">
           <span className="font-sans">Columns</span>
-          <SelectionBox items={items2} />
+          <SelectionBox
+            items={defaultColumns}
+            selectedKeys={selectedColumns}
+            selectionMode="multiple" // or "single" or "none"
+            onSelectionChange={setSelectedColumns}
+          />
           <DiscogButton className="mt-6 mr-auto ">Delete Column</DiscogButton>
           <DiscogButton className="mt-4 mr-auto ">Reset Columns</DiscogButton>
         </div>
         <div className="flex flex-col w-[1000px]">
           <span className="font-sans">URLs</span>
-          <SelectionBox items={items} />
+          <SelectionBox
+            items={urlItems}
+            selectedKeys={selectedUrls}
+            selectionMode="multiple"
+            onSelectionChange={setSelectedUrls}
+          />
           <div className="flex flex-row px-2 pt-6 items-center">
             <span className="w-[130]">Enter in URL</span>
             <Input
@@ -176,18 +266,21 @@ export default function Home() {
               }}
               label="URL"
               type="url"
+              value={urlInput}
+              onValueChange={setUrlInput}
             />
           </div>
-          <div className="flex flex-row px-2 pt-4 justify-between w-[400px]">
-            <DiscogButton>Add</DiscogButton>
-            <DiscogButton>Delete</DiscogButton>
-            <DiscogButton>Delete Last</DiscogButton>
-            <DiscogButton>Clear</DiscogButton>
+          <div className="flex flex-row px-2 pt-4 justify-between w-[500px]">
+            <DiscogButton onPress={onAdd}>Add</DiscogButton>
+            <DiscogButton onPress={onDelete}>Delete</DiscogButton>
+            <DiscogButton onPress={onDeleteLast}>Delete Last</DiscogButton>
+            <DiscogButton onPress={onClear}>Clear</DiscogButton>
+            <DiscogButton onPress={onUndo}>Undo</DiscogButton>
           </div>
         </div>
       </div>
       <div className="flex flex-row items-start gap-4 pt-10 items-center">
-        <span>Enter in your Discogs User Token</span>
+        <span>Enter in your Discogs User Token (Optional)</span>
         <Input
           classNames={{
             inputWrapper:
@@ -195,8 +288,10 @@ export default function Home() {
           }}
           label="User Token"
           type="password"
+          value={userToken}
+          onValueChange={setUserToken}
         />
-        <DiscogButton>Run</DiscogButton>
+        <DiscogButton onPress={onRun}>Run</DiscogButton>
       </div>
     </>
     // <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
