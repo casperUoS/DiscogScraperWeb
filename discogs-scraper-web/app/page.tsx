@@ -1,6 +1,7 @@
 "use client";
 
 import { Input } from "@heroui/input";
+import {Spinner} from "@heroui/spinner";
 import { useState } from "react";
 
 import SelectionBox from "@/components/selection-box";
@@ -127,6 +128,7 @@ export default function Home() {
   );
   const [urlInput, setUrlInput] = useState("");
   const [userToken, setUserToken] = useState("");
+  const [isLoading , setIsLoading] = useState(false);
 
   // Proper undo buffer using React state
   const [backupURLs, setBackupURLs] = useState<
@@ -200,6 +202,7 @@ export default function Home() {
     // }
 
     try {
+      setIsLoading(true);
       const response = await fetch("/api/fetchURLs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -211,6 +214,8 @@ export default function Home() {
       });
 
       const { csvData } = await response.json();
+
+      setIsLoading(false);
 
       downloadCSV(csvData, "output.csv");
     } catch (error) {
@@ -291,6 +296,7 @@ export default function Home() {
           value={userToken}
           onValueChange={setUserToken}
         />
+        {isLoading && <Spinner color="default" variant="spinner" />}
         <DiscogButton onPress={onRun}>Run</DiscogButton>
       </div>
     </>
