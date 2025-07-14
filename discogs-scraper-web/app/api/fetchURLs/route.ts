@@ -7,6 +7,8 @@ const getReleasesFromUrls = async (
 ) => {
   const releases = [];
 
+  console.log("URLS =" + urls)
+
   for (const urlItem of urls) {
     try {
       // Extract release ID from Discogs URL
@@ -321,6 +323,7 @@ const processReleases = async (
 };
 
 export async function POST(request: NextRequest) {
+  console.log("recived")
   try {
     const { userToken, urls, columns } = await request.json();
 

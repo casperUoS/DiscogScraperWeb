@@ -1,7 +1,7 @@
 "use client";
 
 import { Input } from "@heroui/input";
-import {Spinner} from "@heroui/spinner";
+import { Spinner } from "@heroui/spinner";
 import { useState } from "react";
 
 import SelectionBox from "@/components/selection-box";
@@ -128,7 +128,7 @@ export default function Home() {
   );
   const [urlInput, setUrlInput] = useState("");
   const [userToken, setUserToken] = useState("");
-  const [isLoading , setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Proper undo buffer using React state
   const [backupURLs, setBackupURLs] = useState<
@@ -200,6 +200,8 @@ export default function Home() {
 
     //   return;
     // }
+
+    console.log("Sending")
 
     try {
       setIsLoading(true);
