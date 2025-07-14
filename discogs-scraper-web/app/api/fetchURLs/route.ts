@@ -171,10 +171,7 @@ const getTracks2 = (release: any): string => {
       release.formats[0]["name"] +
       "2: " +
       release.tracklist
-        .filter(
-          (track: any) =>
-            track.position.includes("2.") || track.position.includes("2-"),
-        )
+        .filter((track: any) => /^(2[.-]|[CD])/.test(track.position))
         .map((track: any) =>
           release.artists_sort == "Various"
             ? track.artists.map((t: any) => t.name).join(" - ") +
