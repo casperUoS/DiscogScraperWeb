@@ -1,26 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DiscogsClient } from "@lionralfs/discogs-client";
 
 const getReleasesFromUrls = async (
-  client: any,
+  userToken: string,
   urls: { key: string; label: string }[],
 ) => {
   const releases = [];
-
-  console.log("URLS =" + urls[0].key)
 
   for (const urlItem of urls) {
     try {
       // Extract release ID from Discogs URL
       const releaseId = extractReleaseIdFromUrl(urlItem.key);
 
-      console.log("Is release id?: " + releaseId)
-
       if (releaseId) {
-        let db = client.database();
-        const release = await db.getRelease(releaseId);
+        // let db = client.database();
+        // const release = await db.getRelease(releaseId);
 
-        releases.push(release.data);
+        const response = await fetch(
+          `https://api.discogs.com/releases/${releaseId}`,
+          {
+            method: "GET",
+            headers: {
+              "User-Agent":
+                "DiscogScraperWeb/1.0 (+https://discogsscraper.com)",
+              // Accept: "application/vnd.discogs.v2.discogs+json",
+              ...(userToken
+                ? { Authorization: `Discogs token=${userToken}` }
+                : {}),
+            },
+          },
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+
+          throw new Error(
+            `HTTP ${response.status}: ${errorText.substring(0, 200)}`,
+          );
+        }
+
+        const release = await response.json();
+
+        releases.push(release);
       }
     } catch {}
   }
@@ -212,7 +232,7 @@ const getFormat = (release: any): string => {
 };
 
 const processReleases = async (
-  client: any,
+  userToken: string,
   urls: { key: string; label: string }[],
   column: {
     key: string;
@@ -220,7 +240,7 @@ const processReleases = async (
   }[],
 ) => {
   // Get releases from URLs
-  const releases = await getReleasesFromUrls(client, urls);
+  const releases = await getReleasesFromUrls(userToken, urls);
 
   // Create CSV content
   let columnKeys = column.map((col) => col.key);
@@ -325,22 +345,21 @@ const processReleases = async (
 };
 
 export async function POST(request: NextRequest) {
-  console.log("recived")
   try {
     const { userToken, urls, columns } = await request.json();
 
-    const client = new DiscogsClient({
-      userAgent: "MyUserAgent/1.0",
-      ...(userToken !== "" ? { auth: { userToken } } : {}),
-    });
+    // const client = new DiscogsClient({
+    //   userAgent: "DiscogsScraperWeb/1.0 +discogsscraper.com",
+    //   ...(userToken !== "" ? { auth: { userToken } } : {}),
+    // });
 
-    client.setConfig({
-      exponentialBackoffIntervalMs: 2000,
-      exponentialBackoffMaxRetries: 5,
-      exponentialBackoffRate: 2.7,
-    });
+    // client.setConfig({
+    //   exponentialBackoffIntervalMs: 2000,
+    //   exponentialBackoffMaxRetries: 5,
+    //   exponentialBackoffRate: 2.7,
+    // });
 
-    const csvData = await processReleases(client, urls, columns);
+    const csvData = await processReleases(userToken, urls, columns);
 
     return NextResponse.json({ csvData });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

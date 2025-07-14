@@ -201,8 +201,6 @@ export default function Home() {
     //   return;
     // }
 
-    console.log("Sending")
-
     try {
       setIsLoading(true);
       const response = await fetch("/api/fetchURLs", {
