@@ -21,6 +21,8 @@ const getReleasesFromUrls = async (
     } catch {}
   }
 
+  // console.log(releases[0].tracklist[0].artists);
+
   return releases;
 };
 
@@ -134,19 +136,32 @@ const getCountry = (release: any): string => {
 
 const getTracks1 = (release: any): string => {
   if (parseInt(release.formats[0]["qty"]) > 1) {
+    // console.log(release.tracklist[0].artists);
     return (
       release.formats[0]["name"] +
       "1: " +
       release.tracklist
-        .filter(
-          (track: any) =>
-            track.position.includes("1.") || track.position.includes("1-"),
+        .filter((track: any) => /^(1[.-]|[AB])/.test(track.position))
+        .map((track: any) =>
+          release.artists_sort == "Various"
+            ? track.artists.map((t: any) => t.name).join(" - ") +
+              " - " +
+              track.title
+            : track.title,
         )
-        .map((track: any) => track.title)
         .join(".- ")
     );
   } else {
-    return release.tracklist.map((track: any) => track.title).join(".- ");
+    // console.log(release.tracklist)
+    return release.tracklist
+      .map((track: any) =>
+        release.artists_sort == "Various"
+          ? track.artists.map((t: any) => t.name).join(" - ") +
+            " - " +
+            track.title
+          : track.title,
+      )
+      .join(".- ");
   }
 };
 
@@ -160,7 +175,13 @@ const getTracks2 = (release: any): string => {
           (track: any) =>
             track.position.includes("2.") || track.position.includes("2-"),
         )
-        .map((track: any) => track.title)
+        .map((track: any) =>
+          release.artists_sort == "Various"
+            ? track.artists.map((t: any) => t.name).join(" - ") +
+              " - " +
+              track.title
+            : track.title,
+        )
         .join(".- ")
     );
   } else {
