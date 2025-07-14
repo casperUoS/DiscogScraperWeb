@@ -7,12 +7,14 @@ const getReleasesFromUrls = async (
 ) => {
   const releases = [];
 
-  console.log("URLS =" + urls)
+  console.log("URLS =" + urls[0].key)
 
   for (const urlItem of urls) {
     try {
       // Extract release ID from Discogs URL
       const releaseId = extractReleaseIdFromUrl(urlItem.key);
+
+      console.log("Is release id?: " + releaseId)
 
       if (releaseId) {
         let db = client.database();
