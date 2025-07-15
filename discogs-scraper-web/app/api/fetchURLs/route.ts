@@ -231,6 +231,14 @@ const getFormat = (release: any): string => {
   }
 };
 
+// Helper function to safely get string values
+const safeString = (value: any): string => {
+  if (value === null || value === undefined) {
+    return "";
+  }
+  return String(value);
+};
+
 const processReleases = async (
   userToken: string,
   urls: { key: string; label: string }[],
@@ -281,7 +289,7 @@ const processReleases = async (
       row.push(getCountry(release));
     }
     if (columnKeys.includes("Title {499}")) {
-      row.push(`"${release.title}"`);
+      row.push(`"${safeString(release.title)}"`);
     }
     if (columnKeys.includes("Contributor 1 {702}")) {
       row.push("");
