@@ -151,7 +151,7 @@ const getLabelMatch = (release: any): string => {
 };
 
 const getDate = (release: any): string => {
-  return release.released || release.year?.toString() || "[unkown]";
+  return release.year?.toString() || "[unkown]";
 };
 
 const getCountry = (release: any): string => {
@@ -160,7 +160,7 @@ const getCountry = (release: any): string => {
 
 const getTracks1 = (release: any): string => {
   if (parseInt(release.formats[0]["qty"]) > 1) {
-    // console.log(release.tracklist[0].artists);
+    // console.log(release.tracklist);
     return (
       release.formats[0]["name"] +
       "1: " +
@@ -176,11 +176,11 @@ const getTracks1 = (release: any): string => {
         .join(".- ")
     );
   } else {
-    // console.log(release.tracklist)
+    // console.log(release.artists)
     return release.tracklist
       .map((track: any) =>
         release.artists_sort == "Various"
-          ? track.artists.map((t: any) => t.name).join(" - ") +
+          ? track.artists.map((t: any) => t.name || "").join(" - ") +
             " - " +
             track.title
           : track.title,
@@ -307,7 +307,7 @@ const processReleases = async (
     });
 
     if (columnKeys.includes("Country {631}")) {
-      row.push(getCountry(release));
+      row.push("");
     }
     if (columnKeys.includes("Culture {632}")) {
       row.push("");
