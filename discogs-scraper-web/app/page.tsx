@@ -163,7 +163,7 @@ export default function Home() {
     setUrlItems(() =>
       localStorage.getItem("urlItems")
         ? JSON.parse(localStorage.getItem("urlItems") || "null")
-        : "",
+        : [],
     );
   }, []);
 
