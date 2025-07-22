@@ -25,7 +25,7 @@ export const Navbar = () => {
   const searchInput = (
     <Input
       aria-label="Search"
-      classNames={{
+      classNames={{ 
         inputWrapper: "bg-default-100",
         input: "text-sm",
       }}

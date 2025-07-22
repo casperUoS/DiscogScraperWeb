@@ -58,6 +58,10 @@ export default function Home() {
       label: "Contributor 1",
     },
     {
+      key: "Contributor 2 {702}",
+      label: "Contributor 2",
+    },
+    {
       key: "Contents note {505}",
       label: "Contents note",
     },
@@ -66,8 +70,24 @@ export default function Home() {
       label: "505-2",
     },
     {
+      key: "505-3",
+      label: "505-3",
+    },
+    {
+      key: "505-4",
+      label: "505-4",
+    },
+    {
+      key: "505-5",
+      label: "505-5",
+    },
+    {
       key: "Genre 1 {633}",
       label: "Genre 1",
+    },
+    {
+      key: "Genre 2 {633}",
+      label: "Genre 2",
     },
     {
       key: "Country {631}",

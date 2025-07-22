@@ -236,6 +236,7 @@ const safeString = (value: any): string => {
   if (value === null || value === undefined) {
     return "";
   }
+
   return String(value);
 };
 
@@ -294,9 +295,15 @@ const processReleases = async (
     if (columnKeys.includes("Contributor 1 {702}")) {
       row.push("");
     }
+    if (columnKeys.includes("Contributor 2 {702}")) {
+      row.push("");
+    }
     if (columnKeys.includes("Contents note {505}")) {
       row.push(`"${getTracks1(release)}"`);
       row.push(`"${getTracks2(release)}"`);
+      row.push("");
+      row.push("");
+      row.push("");
     }
 
     // Handle Genre columns
