@@ -13,19 +13,13 @@ import NextLink from "next/link";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import {
-  TwitterIcon,
-  GithubIcon,
-  DiscordIcon,
-  SearchIcon,
-  ScraperIcon,
-} from "@/components/icons";
+import { GithubIcon, SearchIcon, ScraperIcon } from "@/components/icons";
 
 export const Navbar = () => {
   const searchInput = (
     <Input
       aria-label="Search"
-      classNames={{ 
+      classNames={{
         inputWrapper: "bg-default-100",
         input: "text-sm",
       }}

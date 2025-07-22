@@ -42,9 +42,9 @@ const getReleasesFromUrls = async (
 
         releases.push(release);
       }
-      console.log("sucess");
+      // console.log("sucess");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 
@@ -442,8 +442,8 @@ export async function POST(request: NextRequest) {
     const csvData = await processReleases(userToken, urls, columns);
 
     return NextResponse.json({ csvData });
-  } catch (error) {
-    console.log("Error: ", error);
+  } catch {
+    // console.log("Error: ", error);
 
     return NextResponse.json({ error: "Scraping failed" }, { status: 500 });
   }
