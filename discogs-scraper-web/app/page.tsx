@@ -215,6 +215,13 @@ export default function Home() {
       return;
     }
 
+    if (urlItems.find((a) => a.key.includes("/master/"))) {
+      alert(
+        "One of the url's is a master url, please replace this url with a release url",
+      );
+
+      return;
+    }
     // if (selectedColumns.size === 0) {
     //   alert("Please select at least one column");
 
@@ -317,7 +324,9 @@ export default function Home() {
           onValueChange={setUserToken}
         />
         {isLoading && <Spinner color="default" variant="spinner" />}
-        <DiscogButton onPress={onRun}>Run</DiscogButton>
+        <DiscogButton color="primary" onPress={onRun}>
+          Run
+        </DiscogButton>
       </div>
     </>
     // <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
