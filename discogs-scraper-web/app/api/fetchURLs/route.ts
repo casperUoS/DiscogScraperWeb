@@ -210,6 +210,48 @@ const getTracks2 = (release: any): string => {
   }
 };
 
+const getTracks3 = (release: any): string => {
+  if (parseInt(release.formats[0]["qty"]) > 2) {
+    return (
+      release.formats[0]["name"] +
+      "3: " +
+      release.tracklist
+        .filter((track: any) => /^(3[.-]|[EF])/.test(track.position))
+        .map((track: any) =>
+          release.artists_sort == "Various"
+            ? track.artists.map((t: any) => t.name).join(" - ") +
+              " - " +
+              track.title
+            : track.title,
+        )
+        .join(".- ")
+    );
+  } else {
+    return "";
+  }
+};
+
+const getTracks4 = (release: any): string => {
+  if (parseInt(release.formats[0]["qty"]) > 1) {
+    return (
+      release.formats[0]["name"] +
+      "4: " +
+      release.tracklist
+        .filter((track: any) => /^(4[.-]|[GH])/.test(track.position))
+        .map((track: any) =>
+          release.artists_sort == "Various"
+            ? track.artists.map((t: any) => t.name).join(" - ") +
+              " - " +
+              track.title
+            : track.title,
+        )
+        .join(".- ")
+    );
+  } else {
+    return "";
+  }
+};
+
 const getFormat = (release: any): string => {
   try {
     const format = release.formats[0];
@@ -301,8 +343,8 @@ const processReleases = async (
     if (columnKeys.includes("Contents note {505}")) {
       row.push(`"${getTracks1(release)}"`);
       row.push(`"${getTracks2(release)}"`);
-      row.push("");
-      row.push("");
+      row.push(`"${getTracks3(release)}"`);
+      row.push(`"${getTracks4(release)}"`);
       row.push("");
     }
 
