@@ -2,7 +2,7 @@
 
 import { Input } from "@heroui/input";
 import { Spinner } from "@heroui/spinner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import SelectionBox from "@/components/selection-box";
 import { DiscogButton } from "@/components/discog-button";
@@ -158,6 +158,15 @@ export default function Home() {
   const [selectedColumns, setSelectedColumns] = useState(new Set<string>());
   const [selectedUrls, setSelectedUrls] = useState(new Set<string>());
 
+  useEffect(() => {
+    setUserToken(localStorage.getItem("userToken") || "");
+    setUrlItems(() =>
+      localStorage.getItem("urlItems")
+        ? JSON.parse(localStorage.getItem("urlItems") || "null")
+        : "",
+    );
+  }, []);
+
   const onAdd = () => {
     setBackupURLs(urlItems); // Save current state before making changes
     if (urlInput.trim() === "") return; // Don't add empty URLs
@@ -170,6 +179,7 @@ export default function Home() {
       const newItems = [...urlItems, { key: urlInput, label: urlInput }];
 
       setUrlItems(newItems);
+      localStorage.setItem("urlItems", JSON.stringify(newItems));
     } else {
       alert("You entered in the same url twice, nice one");
     }
@@ -182,6 +192,7 @@ export default function Home() {
 
     setUrlItems(newItems);
     setSelectedUrls(new Set());
+    localStorage.setItem("urlItems", JSON.stringify(newItems));
   };
 
   const onDeleteLast = () => {
@@ -190,16 +201,19 @@ export default function Home() {
       const newItems = urlItems.slice(0, -1); // Remove last item properly
 
       setUrlItems(newItems);
+      localStorage.setItem("urlItems", JSON.stringify(newItems));
     }
   };
 
   const onClear = () => {
     setBackupURLs(urlItems); // Save current state before making changes
     setUrlItems([]);
+    localStorage.setItem("urlItems", JSON.stringify([]));
   };
 
   const onUndo = () => {
     setUrlItems(backupURLs); // Restore previous state
+    localStorage.setItem("urlItems", JSON.stringify(backupURLs));
   };
 
   const onRun = async () => {
@@ -208,6 +222,8 @@ export default function Home() {
 
     //   return;
     // }
+
+    localStorage.setItem("userToken", userToken);
 
     if (urlItems.length === 0) {
       alert("Please add at least one URL");
