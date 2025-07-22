@@ -43,7 +43,7 @@ const getReleasesFromUrls = async (
         releases.push(release);
       }
       // console.log("sucess");
-    } catch (error) {
+    } catch {
       // console.log(error);
     }
   }
