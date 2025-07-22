@@ -42,7 +42,10 @@ const getReleasesFromUrls = async (
 
         releases.push(release);
       }
-    } catch {}
+      console.log("sucess");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // console.log(releases[0].tracklist[0].artists);
@@ -166,25 +169,33 @@ const getTracks1 = (release: any): string => {
       "1: " +
       release.tracklist
         .filter((track: any) => /^(1[.-]|[AB])/.test(track.position))
-        .map((track: any) =>
-          release.artists_sort == "Various"
-            ? track.artists.map((t: any) => t.name).join(" - ") +
-              " - " +
-              track.title
-            : track.title,
-        )
+        .map((track: any) => {
+          try {
+            return release.artists_sort == "Various"
+              ? track.artists.map((t: any) => t.name || "").join(" - ") +
+                  " - " +
+                  track.title
+              : track.title;
+          } catch {
+            return "";
+          }
+        })
         .join(".- ")
     );
   } else {
-    // console.log(release.artists)
+    // console.log(release.tracklist)
     return release.tracklist
-      .map((track: any) =>
-        release.artists_sort == "Various"
-          ? track.artists.map((t: any) => t.name || "").join(" - ") +
-            " - " +
-            track.title
-          : track.title,
-      )
+      .map((track: any) => {
+        try {
+          return release.artists_sort == "Various"
+            ? track.artists.map((t: any) => t.name || "").join(" - ") +
+                " - " +
+                track.title
+            : track.title;
+        } catch {
+          return "";
+        }
+      })
       .join(".- ");
   }
 };
@@ -196,13 +207,17 @@ const getTracks2 = (release: any): string => {
       "2: " +
       release.tracklist
         .filter((track: any) => /^(2[.-]|[CD])/.test(track.position))
-        .map((track: any) =>
-          release.artists_sort == "Various"
-            ? track.artists.map((t: any) => t.name).join(" - ") +
-              " - " +
-              track.title
-            : track.title,
-        )
+        .map((track: any) => {
+          try {
+            return release.artists_sort == "Various"
+              ? track.artists.map((t: any) => t.name || "").join(" - ") +
+                  " - " +
+                  track.title
+              : track.title;
+          } catch {
+            return "";
+          }
+        })
         .join(".- ")
     );
   } else {
@@ -217,13 +232,17 @@ const getTracks3 = (release: any): string => {
       "3: " +
       release.tracklist
         .filter((track: any) => /^(3[.-]|[EF])/.test(track.position))
-        .map((track: any) =>
-          release.artists_sort == "Various"
-            ? track.artists.map((t: any) => t.name).join(" - ") +
-              " - " +
-              track.title
-            : track.title,
-        )
+        .map((track: any) => {
+          try {
+            return release.artists_sort == "Various"
+              ? track.artists.map((t: any) => t.name || "").join(" - ") +
+                  " - " +
+                  track.title
+              : track.title;
+          } catch {
+            return "";
+          }
+        })
         .join(".- ")
     );
   } else {
@@ -238,13 +257,17 @@ const getTracks4 = (release: any): string => {
       "4: " +
       release.tracklist
         .filter((track: any) => /^(4[.-]|[GH])/.test(track.position))
-        .map((track: any) =>
-          release.artists_sort == "Various"
-            ? track.artists.map((t: any) => t.name).join(" - ") +
-              " - " +
-              track.title
-            : track.title,
-        )
+        .map((track: any) => {
+          try {
+            return release.artists_sort == "Various"
+              ? track.artists.map((t: any) => t.name || "").join(" - ") +
+                  " - " +
+                  track.title
+              : track.title;
+          } catch {
+            return "";
+          }
+        })
         .join(".- ")
     );
   } else {
@@ -419,8 +442,9 @@ export async function POST(request: NextRequest) {
     const csvData = await processReleases(userToken, urls, columns);
 
     return NextResponse.json({ csvData });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
+    console.log("Error: ", error);
+
     return NextResponse.json({ error: "Scraping failed" }, { status: 500 });
   }
 }
