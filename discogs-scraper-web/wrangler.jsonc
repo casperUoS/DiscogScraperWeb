@@ -16,6 +16,7 @@
     }
   ],
   "vars": {
-    "CONSUMER_KEY": "BfQAQQxgmvsoetwQbvgX"
+    "CONSUMER_KEY": "BfQAQQxgmvsoetwQbvgX",
+    "CONSUMER_SECRET"
   }
 }
