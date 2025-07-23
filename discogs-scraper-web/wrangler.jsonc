@@ -14,9 +14,5 @@
       "pattern": "discogsscraper.com",
       "custom_domain": true
     }
-  ],
-  "vars": {
-    "CONSUMER_KEY": "BfQAQQxgmvsoetwQbvgX",
-    "CONSUMER_SECRET"
-  }
+  ]
 }
