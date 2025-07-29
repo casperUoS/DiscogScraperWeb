@@ -1491,3 +1491,6 @@ discogs-scraper-web/.wrangler/tmp/bundle-QIwGkl/middleware-loader.entry.ts
 discogs-scraper-web/.wrangler/tmp/dev-PGyaIn/worker.js
 discogs-scraper-web/.wrangler/tmp/dev-PGyaIn/worker.js.map
 discogs-scraper-web/wrangler.jsonc
+discogs-scraper-web/secrets.dev.vars
+discogs-scraper-web/.dev.vars
+discogs-scraper-web/.env

@@ -147,7 +147,7 @@ export default function Home() {
     [],
   );
   const [urlInput, setUrlInput] = useState("");
-  const [userToken, setUserToken] = useState("");
+  // const [userToken, setUserToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Proper undo buffer using React state
@@ -159,7 +159,7 @@ export default function Home() {
   const [selectedUrls, setSelectedUrls] = useState(new Set<string>());
 
   useEffect(() => {
-    setUserToken(localStorage.getItem("userToken") || "");
+    // setUserToken(localStorage.getItem("userToken") || "");
     setUrlItems(() =>
       localStorage.getItem("urlItems")
         ? JSON.parse(localStorage.getItem("urlItems") || "null")
@@ -223,7 +223,7 @@ export default function Home() {
     //   return;
     // }
 
-    localStorage.setItem("userToken", userToken);
+    // localStorage.setItem("userToken", userToken);
 
     if (urlItems.length === 0) {
       alert("Please add at least one URL");
@@ -250,7 +250,6 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userToken,
           urls: urlItems,
           columns: defaultColumns,
         }),
@@ -318,17 +317,23 @@ export default function Home() {
               onValueChange={setUrlInput}
             />
           </div>
-          <div className="flex flex-row px-2 pt-4 justify-between w-[500px]">
+          <div className="flex flex-row px-2 pt-4 justify-between gap-4">
             <DiscogButton onPress={onAdd}>Add</DiscogButton>
             <DiscogButton onPress={onDelete}>Delete</DiscogButton>
             <DiscogButton onPress={onDeleteLast}>Delete Last</DiscogButton>
             <DiscogButton onPress={onClear}>Clear</DiscogButton>
             <DiscogButton onPress={onUndo}>Undo</DiscogButton>
+            <div className="flex gap-2 ml-auto">
+              {isLoading && <Spinner color="default" variant="spinner" />}
+              <DiscogButton color="primary" onPress={onRun}>
+                Run
+              </DiscogButton>
+            </div>
           </div>
         </div>
       </div>
       <div className="flex flex-row items-start gap-4 pt-10 items-center">
-        <span>Enter in your Discogs User Token (Optional)</span>
+        {/* <span>Enter in your Discogs User Token (Optional)</span>
         <Input
           classNames={{
             inputWrapper:
@@ -338,11 +343,7 @@ export default function Home() {
           type="password"
           value={userToken}
           onValueChange={setUserToken}
-        />
-        {isLoading && <Spinner color="default" variant="spinner" />}
-        <DiscogButton color="primary" onPress={onRun}>
-          Run
-        </DiscogButton>
+        /> */}
       </div>
     </>
     // <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">

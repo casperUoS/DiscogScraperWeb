@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const getReleasesFromUrls = async (
-  userToken: string,
-  urls: { key: string; label: string }[],
-) => {
+const getReleasesFromUrls = async (urls: { key: string; label: string }[]) => {
   const releases = [];
 
   for (const urlItem of urls) {
@@ -23,9 +20,7 @@ const getReleasesFromUrls = async (
               "User-Agent":
                 "DiscogScraperWeb/1.0 (+https://discogsscraper.com)",
               // Accept: "application/vnd.discogs.v2.discogs+json",
-              ...(userToken
-                ? { Authorization: `Discogs token=${userToken}` }
-                : {}),
+              Authorization: `Discogs key=${process.env.CONSUMER_KEY}, secret=${process.env.CONSUMER_SECRET}`,
             },
           },
         );
@@ -43,7 +38,7 @@ const getReleasesFromUrls = async (
         releases.push(release);
       }
       // console.log("sucess");
-    } catch  {
+    } catch {
       // console.log(error);
     }
   }
@@ -306,7 +301,6 @@ const safeString = (value: any): string => {
 };
 
 const processReleases = async (
-  userToken: string,
   urls: { key: string; label: string }[],
   column: {
     key: string;
@@ -314,7 +308,7 @@ const processReleases = async (
   }[],
 ) => {
   // Get releases from URLs
-  const releases = await getReleasesFromUrls(userToken, urls);
+  const releases = await getReleasesFromUrls(urls);
 
   // Create CSV content
   let columnKeys = column.map((col) => col.key);
@@ -426,7 +420,7 @@ const processReleases = async (
 
 export async function POST(request: NextRequest) {
   try {
-    const { userToken, urls, columns } = await request.json();
+    const { urls, columns } = await request.json();
 
     // const client = new DiscogsClient({
     //   userAgent: "DiscogsScraperWeb/1.0 +discogsscraper.com",
@@ -439,7 +433,7 @@ export async function POST(request: NextRequest) {
     //   exponentialBackoffRate: 2.7,
     // });
 
-    const csvData = await processReleases(userToken, urls, columns);
+    const csvData = await processReleases(urls, columns);
 
     return NextResponse.json({ csvData });
   } catch {
