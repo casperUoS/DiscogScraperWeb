@@ -30,6 +30,7 @@ type SelectionBoxProps = {
   selectedKeys?: any;
   onSelectionChange?: (keys: any) => void;
   selectionMode?: "none" | "single" | "multiple";
+  maxListBoxHeight?: number;
 };
 
 export const SelectionBox = ({
@@ -38,6 +39,7 @@ export const SelectionBox = ({
   selectedKeys,
   onSelectionChange,
   selectionMode = "multiple",
+  maxListBoxHeight = 400,
 }: SelectionBoxProps) => (
   <ListboxWrapper className={className}>
     <Listbox
@@ -51,7 +53,7 @@ export const SelectionBox = ({
       selectedKeys={selectedKeys}
       selectionMode={selectionMode}
       virtualization={{
-        maxListboxHeight: 400,
+        maxListboxHeight: maxListBoxHeight,
         itemHeight: 40,
       }}
       onSelectionChange={onSelectionChange}

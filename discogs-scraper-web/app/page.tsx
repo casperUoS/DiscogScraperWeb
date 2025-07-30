@@ -283,52 +283,52 @@ export default function Home() {
   };
 
   return (
-    <>
-      <div className="flex flex-row items-start gap-4">
-        <div className="flex flex-col w-[260px]">
-          <span className="font-sans">Columns</span>
-          <SelectionBox
-            items={defaultColumns}
-            selectedKeys={selectedColumns}
-            selectionMode="multiple" // or "single" or "none"
-            onSelectionChange={setSelectedColumns}
+    <div className="flex flex-row gap-4">
+      <div className="flex flex-col w-[260px]">
+        <span className="font-sans">Columns</span>
+        <SelectionBox
+          items={defaultColumns}
+          maxListBoxHeight={570}
+          selectedKeys={selectedColumns}
+          selectionMode="multiple" // or "single" or "none"
+          onSelectionChange={setSelectedColumns}
+        />
+        {/* <DiscogButton className="mt-6 mr-auto ">Delete Column</DiscogButton>
+          <DiscogButton className="mt-4 mr-auto ">Reset Columns</DiscogButton> */}
+      </div>
+      <div className="flex flex-col w-[1000px]">
+        <span className="font-sans">URLs</span>
+        <SelectionBox
+          items={urlItems}
+          maxListBoxHeight={400}
+          selectedKeys={selectedUrls}
+          selectionMode="multiple"
+          onSelectionChange={setSelectedUrls}
+        />
+        <div className="flex flex-row px-2 pt-6 items-center">
+          <span className="w-[130]">Enter in URL</span>
+          <Input
+            classNames={{
+              inputWrapper:
+                "border-small border-default-300 dark:border-default-200 rounded-none",
+            }}
+            label="URL"
+            type="url"
+            value={urlInput}
+            onValueChange={setUrlInput}
           />
-          <DiscogButton className="mt-6 mr-auto ">Delete Column</DiscogButton>
-          <DiscogButton className="mt-4 mr-auto ">Reset Columns</DiscogButton>
         </div>
-        <div className="flex flex-col w-[1000px]">
-          <span className="font-sans">URLs</span>
-          <SelectionBox
-            items={urlItems}
-            selectedKeys={selectedUrls}
-            selectionMode="multiple"
-            onSelectionChange={setSelectedUrls}
-          />
-          <div className="flex flex-row px-2 pt-6 items-center">
-            <span className="w-[130]">Enter in URL</span>
-            <Input
-              classNames={{
-                inputWrapper:
-                  "border-small border-default-300 dark:border-default-200 rounded-none",
-              }}
-              label="URL"
-              type="url"
-              value={urlInput}
-              onValueChange={setUrlInput}
-            />
-          </div>
-          <div className="flex flex-row px-2 pt-4 justify-between gap-4">
-            <DiscogButton onPress={onAdd}>Add</DiscogButton>
-            <DiscogButton onPress={onDelete}>Delete</DiscogButton>
-            <DiscogButton onPress={onDeleteLast}>Delete Last</DiscogButton>
-            <DiscogButton onPress={onClear}>Clear</DiscogButton>
-            <DiscogButton onPress={onUndo}>Undo</DiscogButton>
-            <div className="flex gap-2 ml-auto">
-              {isLoading && <Spinner color="default" variant="spinner" />}
-              <DiscogButton color="primary" onPress={onRun}>
-                Run
-              </DiscogButton>
-            </div>
+        <div className="flex flex-row px-2 pt-4 justify-between gap-4">
+          <DiscogButton onPress={onAdd}>Add</DiscogButton>
+          <DiscogButton onPress={onDelete}>Delete</DiscogButton>
+          <DiscogButton onPress={onDeleteLast}>Delete Last</DiscogButton>
+          <DiscogButton onPress={onClear}>Clear</DiscogButton>
+          <DiscogButton onPress={onUndo}>Undo</DiscogButton>
+          <div className="flex gap-2 ml-auto">
+            {isLoading && <Spinner color="default" variant="spinner" />}
+            <DiscogButton color="primary" onPress={onRun}>
+              Run
+            </DiscogButton>
           </div>
         </div>
       </div>
@@ -345,7 +345,7 @@ export default function Home() {
           onValueChange={setUserToken}
         /> */}
       </div>
-    </>
+    </div>
     // <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
     //   <div className="inline-block max-w-xl text-center justify-center">
     //     <span className={title()}>Make&nbsp;</span>
