@@ -209,9 +209,14 @@ export const ScraperIcon = ({
           y="83.345"
         />
       </clipPath>
+      <mask id="scraperMask">
+        <rect fill="white" width="500" height="500" />
+        <ellipse cx="101.8" cy="132.24" rx="12.917" ry="12.609" />
+      </mask>
     </defs>
     <g transform="translate(-54.128 -90.726)">
       <rect
+        // mask="url(#scraperMask)"
         fill="currentColor"
         height="30.447"
         strokeWidth="0.24461"
@@ -224,11 +229,12 @@ export const ScraperIcon = ({
         cx="101.95"
         cy="130.71"
         fill="currentColor"
+        mask="url(#scraperMask)"
         rx="41.98"
         ry="39.981"
         strokeWidth="0.27918"
       />
-      <ellipse
+      {/* <ellipse
         clipPath="url(#scraperClipPath)"
         cx="101.8"
         cy="132.24"
@@ -236,7 +242,7 @@ export const ScraperIcon = ({
         rx="12.917"
         ry="12.609"
         strokeWidth="0.19409"
-      />
+      /> */}
       <ellipse
         clipPath="url(#scraperClipPath)"
         cx="101.95"
