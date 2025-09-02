@@ -275,15 +275,17 @@ const getFormat = (release: any): string => {
     const format = release.formats[0];
     let result = format.qty + " ";
 
+    if (format.name === "Vinyl") {
+      result += "LP";
+    } else {
+      result += format.namef;
+    }
+
     if (parseInt(format.qty) > 1) {
       result += "s";
     }
 
-    if (format.name === "Vinyl") {
-      result += "LP Stereo";
-    } else {
-      result += format.name + "stereo";
-    }
+    result += " Stereo";
 
     return result;
   } catch {
