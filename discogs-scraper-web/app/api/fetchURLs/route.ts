@@ -26,6 +26,8 @@ const getReleasesFromUrls = async (urls: { key: string; label: string }[]) => {
           },
         );
 
+        console.log("bingus")
+
         if (!response.ok) {
           const errorText = await response.text();
 
@@ -311,7 +313,6 @@ const processReleases = async (
   }[],
 ) => {
   // Get releases from URLs
-  console.log(urls)
   const releases = await getReleasesFromUrls(urls);
 
   // Create CSV content
