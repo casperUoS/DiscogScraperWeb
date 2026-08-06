@@ -1,3 +1,4 @@
+import { url } from "inspector";
 import { NextRequest, NextResponse } from "next/server";
 
 const getReleasesFromUrls = async (urls: { key: string; label: string }[]) => {
@@ -310,9 +311,8 @@ const processReleases = async (
   }[],
 ) => {
   // Get releases from URLs
+  console.log(urls)
   const releases = await getReleasesFromUrls(urls);
-
-  console.log(releases)
 
   // Create CSV content
   let columnKeys = column.map((col) => col.key);
@@ -424,7 +424,6 @@ const processReleases = async (
 
 export async function POST(request: NextRequest) {
   try {
-    console.log("belooooo")
     const { urls, columns } = await request.json();
 
     // const client = new DiscogsClient({
