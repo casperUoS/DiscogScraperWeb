@@ -312,6 +312,8 @@ const processReleases = async (
   // Get releases from URLs
   const releases = await getReleasesFromUrls(urls);
 
+  console.log(releases)
+
   // Create CSV content
   let columnKeys = column.map((col) => col.key);
   let csvContent = columnKeys.join(",") + "\n";
