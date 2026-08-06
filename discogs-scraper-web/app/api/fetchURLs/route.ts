@@ -424,6 +424,7 @@ const processReleases = async (
 
 export async function POST(request: NextRequest) {
   try {
+    console.log("belooooo")
     const { urls, columns } = await request.json();
 
     // const client = new DiscogsClient({
