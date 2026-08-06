@@ -14,5 +14,11 @@
       "pattern": "discogsscraper.com",
       "custom_domain": true
     }
-  ]
+  ],
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    }
+  }
 }
