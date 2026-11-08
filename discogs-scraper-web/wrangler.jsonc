@@ -5,6 +5,7 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
+  "keep_vars": true,
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
@@ -20,8 +21,6 @@
       "enabled": true,
       "invocation_logs": true
     }
-  },
-  "vars": {
-    "CONSUMER_KEY": "BfQAQQxgmvsoetwQbvgX"
-  },
+  }
+  
 }
