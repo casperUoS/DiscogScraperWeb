@@ -469,23 +469,31 @@ export async function POST(request: NextRequest) {
   try {
     const { urls, columns } = await request.json();
 
-    // const client = new DiscogsClient({
-    //   userAgent: "DiscogsScraperWeb/1.0 +discogsscraper.com",
-    //   ...(userToken !== "" ? { auth: { userToken } } : {}),
-    // });
-
-    // client.setConfig({
-    //   exponentialBackoffIntervalMs: 2000,
-    //   exponentialBackoffMaxRetries: 5,
-    //   exponentialBackoffRate: 2.7,
-    // });
+    if (!Array.isArray(urls) || !Array.isArray(columns)) {
+      return NextResponse.json(
+        { error: "urls and columns must both be arrays" },
+        { status: 400 },
+      );
+    }
 
     const csvData = await processReleases(urls, columns);
 
     return NextResponse.json({ csvData });
-  } catch {
-    // console.log("Error: ", error);
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Unknown scraping error";
 
-    return NextResponse.json({ error: "Scraping failed" }, { status: 500 });
+    console.error("CSV generation failed:", error);
+
+    return NextResponse.json(
+      {
+        error: "Scraping failed",
+        detail:
+          process.env.NODE_ENV === "development"
+            ? message
+            : undefined,
+      },
+      { status: 500 },
+    );
   }
 }
