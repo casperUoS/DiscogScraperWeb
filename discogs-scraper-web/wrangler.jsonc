@@ -20,5 +20,8 @@
       "enabled": true,
       "invocation_logs": true
     }
-  }
+  },
+  "vars": {
+    "CONSUMER_KEY": "BfQAQQxgmvsoetwQbvgX"
+  },
 }
