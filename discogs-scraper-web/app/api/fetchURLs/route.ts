@@ -25,9 +25,7 @@ const getReleasesFromUrls = async (urls: { key: string; label: string }[]) => {
             },
           },
         );
-
-        console.log("bingus")
-
+        console.log(response)
         if (!response.ok) {
           const errorText = await response.text();
 
