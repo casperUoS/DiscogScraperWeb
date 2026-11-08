@@ -1,52 +1,88 @@
-import { url } from "inspector";
 import { NextRequest, NextResponse } from "next/server";
 
-const getReleasesFromUrls = async (urls: { key: string; label: string }[]) => {
-  const releases = [];
+type UrlItem = {
+  key: string;
+  label: string;
+};
+
+type DiscogsFailure = {
+  url: string;
+  releaseId?: number;
+  error: string;
+};
+
+const getReleasesFromUrls = async (urls: UrlItem[]) => {
+  const consumerKey = process.env.CONSUMER_KEY;
+  const consumerSecret = process.env.CONSUMER_SECRET;
+
+  if (!consumerKey || !consumerSecret) {
+    throw new Error(
+      "Discogs credentials are not configured in the server environment",
+    );
+  }
+
+  const releases: any[] = [];
+  const failures: DiscogsFailure[] = [];
 
   for (const urlItem of urls) {
+    const releaseId = extractReleaseIdFromUrl(urlItem.key);
+
+    if (!releaseId) {
+      failures.push({
+        url: urlItem.key,
+        error: "Could not extract a Discogs release ID",
+      });
+      continue;
+    }
+
     try {
-      // Extract release ID from Discogs URL
-      const releaseId = extractReleaseIdFromUrl(urlItem.key);
-
-      if (releaseId) {
-        // let db = client.database();
-        // const release = await db.getRelease(releaseId);
-
-        const response = await fetch(
-          `https://api.discogs.com/releases/${releaseId}`,
-          {
-            method: "GET",
-            headers: {
-              "User-Agent":
-                "DiscogScraperWeb/1.0 (+https://discogsscraper.com)",
-              // Accept: "application/vnd.discogs.v2.discogs+json",
-              Authorization: `Discogs key=${process.env.CONSUMER_KEY}, secret=${process.env.CONSUMER_SECRET}`,
-            },
+      const response = await fetch(
+        `https://api.discogs.com/releases/${releaseId}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/vnd.discogs.v2.discogs+json",
+            "User-Agent": "DiscogsScraperWeb/1.0 +https://discogsscraper.com",
+            Authorization: `Discogs key=${consumerKey}, secret=${consumerSecret}`,
           },
+          cache: "no-store",
+          signal: AbortSignal.timeout(15_000),
+        },
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+
+        throw new Error(
+          [
+            `HTTP ${response.status}`,
+            errorText.slice(0, 300),
+            `remaining=${response.headers.get(
+              "x-discogs-ratelimit-remaining",
+            )}`,
+          ].join(": "),
         );
-        console.log(response)
-        if (!response.ok) {
-          const errorText = await response.text();
-
-          throw new Error(
-            `HTTP ${response.status}: ${errorText.substring(0, 200)}`,
-          );
-        }
-
-        const release = await response.json();
-
-        releases.push(release);
       }
-      // console.log("sucess");
-    } catch {
-      // console.log(error);
+
+      releases.push(await response.json());
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+
+      failures.push({
+        url: urlItem.key,
+        releaseId,
+        error: message,
+      });
+
+      console.error("Discogs release request failed", {
+        releaseId,
+        url: urlItem.key,
+        error: message,
+      });
     }
   }
 
-  // console.log(releases[0].tracklist[0].artists);
-
-  return releases;
+  return { releases, failures };
 };
 
 const extractReleaseIdFromUrl = (url: string): number | null => {
@@ -311,7 +347,15 @@ const processReleases = async (
   }[],
 ) => {
   // Get releases from URLs
-  const releases = await getReleasesFromUrls(urls);
+  const { releases, failures } = await getReleasesFromUrls(urls);
+
+  if (releases.length === 0) {
+    throw new Error(
+      `No releases could be retrieved. ${failures
+        .map((failure) => `${failure.releaseId ?? failure.url}: ${failure.error}`)
+        .join("; ")}`,
+    );
+  }
 
   // Create CSV content
   let columnKeys = column.map((col) => col.key);
