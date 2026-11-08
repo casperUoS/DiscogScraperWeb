@@ -15,9 +15,16 @@ const getReleasesFromUrls = async (urls: UrlItem[]) => {
   const consumerKey = process.env.CONSUMER_KEY;
   const consumerSecret = process.env.CONSUMER_SECRET;
 
+  console.log("Discogs environment:", {
+    hasConsumerKey: !!consumerKey,
+    hasConsumerSecret: !!consumerSecret,
+    consumerKeyLength: consumerKey?.length ?? 0,
+    consumerSecretLength: consumerSecret?.length ?? 0,
+  });
+
   if (!consumerKey || !consumerSecret) {
     throw new Error(
-      "Discogs credentials are not configured in the server environment",
+      `Missing Discogs credentials: key=${!!consumerKey}, secret=${!!consumerSecret}`
     );
   }
 
@@ -480,18 +487,16 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ csvData });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unknown scraping error";
-
-    console.error("CSV generation failed:", error);
+    console.error("CSV generation failed:", {
+      message: error instanceof Error ? error.message : String(error),
+      name: error instanceof Error ? error.name : "UnknownError",
+      stack: error instanceof Error ? error.stack : undefined,
+    });
 
     return NextResponse.json(
       {
         error: "Scraping failed",
-        detail:
-          process.env.NODE_ENV === "development"
-            ? message
-            : undefined,
+        detail: error instanceof Error ? error.message : String(error),
       },
       { status: 500 },
     );
