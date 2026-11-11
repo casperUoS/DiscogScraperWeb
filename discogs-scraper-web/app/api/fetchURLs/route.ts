@@ -50,6 +50,13 @@ const getReleasesFromUrls = async (urls: UrlItem[]) => {
         },
       );
 
+      console.log("Discogs response", {
+        status: response.status,
+        limit: response.headers.get("x-discogs-ratelimit"),
+        used: response.headers.get("x-discogs-ratelimit-used"),
+        remaining: response.headers.get("x-discogs-ratelimit-remaining"),
+      });
+
       if (!response.ok) {
         const errorText = await response.text();
 
@@ -72,13 +79,6 @@ const getReleasesFromUrls = async (urls: UrlItem[]) => {
         url: urlItem.key,
         releaseId,
         error: message,
-      });
-
-      console.log("Discogs response", {
-        status: response.status,
-        limit: response.headers.get("x-discogs-ratelimit"),
-        used: response.headers.get("x-discogs-ratelimit-used"),
-        remaining: response.headers.get("x-discogs-ratelimit-remaining"),
       });
 
       console.error("Discogs release request failed", {
