@@ -193,7 +193,7 @@ const getLabelMatch = (release: any): string => {
 };
 
 const getDate = (release: any): string => {
-  return release.year?.toString() || "[unkown]";
+  return release.year?.toString().split(",")[0] || "[unkown]";
 };
 
 const getCountry = (release: any): string => {
