@@ -193,11 +193,11 @@ const getLabelMatch = (release: any): string => {
 };
 
 const getDate = (release: any): string => {
-  return release.year?.toString().split(",")[0] || "[unkown]";
+  return release.year?.toString() || "[unkown]";
 };
 
 const getCountry = (release: any): string => {
-  return release.country || "[unkown]";
+  return release.country.split(",")[0] || "[unkown]";
 };
 
 const getTracks1 = (release: any): string => {
